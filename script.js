@@ -2,6 +2,21 @@ const produtosTable = document.getElementById("produtosTable").getElementsByTagN
 const adicionarProdutoButton = document.getElementById("adicionarProduto");
 const gerarEtiquetasButton = document.getElementById("gerarEtiquetas");
 
+let produtos = {}; // Objeto para armazenar os produtos carregados da planilha
+
+// Função para carregar produtos do Google Sheets
+async function carregarProdutos() {
+    const url = 'https://docs.google.com/spreadsheets/d/1wO7TRDOSikvVZ2GCjXDSSqXpX8kbhNKXY_0P8jW7GMM/export?format=csv';
+    const response = await fetch(url);
+    const data = await response.text();
+    const rows = data.split('\n').slice(1); // Ignora o cabeçalho
+
+    rows.forEach(row => {
+        const [ean, descricao, preco, codigoProduto] = row.split(',');
+        produtos[ean] = { descricao, preco, codigoProduto };
+    });
+}
+
 // Função para adicionar uma nova linha à tabela
 function adicionarProduto() {
     const novaLinha = produtosTable.insertRow();
@@ -29,19 +44,15 @@ function adicionarProduto() {
     });
 }
 
-// Função para buscar o nome do produto por EAN via AJAX
+// Função para buscar o nome do produto por EAN
 function buscarProdutoPorEAN(ean, linha) {
-    // Simulação de um AJAX request para buscar dados do produto
-    fetch(`/buscar?ean=${ean}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.nome) {
-                linha.querySelector('.nome-input').value = data.nome;
-            } else {
-                alert('Produto não encontrado.');
-            }
-        })
-        .catch(err => console.log('Erro:', err));
+    const produto = produtos[ean];
+    if (produto) {
+        linha.querySelector('.nome-input').value = produto.descricao;
+        linha.querySelector('.preco-input').value = produto.preco;
+    } else {
+        alert('Produto não encontrado.');
+    }
 }
 
 // Função para gerar as etiquetas ZPL
@@ -105,3 +116,6 @@ adicionarProdutoButton.addEventListener("click", adicionarProduto);
 
 // Adicionar evento para o botão "Gerar Etiquetas"
 gerarEtiquetasButton.addEventListener("click", gerarEtiquetas);
+
+// Carregar os produtos da planilha ao carregar a página
+carregarProdutos();
