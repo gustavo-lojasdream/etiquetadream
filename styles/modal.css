@@ -1,0 +1,157 @@
+/* Estilo do Modal */
+.modal {
+    display: none; /* Oculto por padrão */
+    position: fixed; /* Fixa o modal na tela */
+    z-index: 1000; /* Coloca o modal acima de outros elementos */
+    left: 0;
+    top: 0;
+    width: 100%; /* Largura total */
+    height: 100%; /* Altura total */
+    overflow: auto; /* Adiciona rolagem se necessário */
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo escuro e transparente */
+    transition: opacity 0.3s ease; /* Efeito de desvanecimento */
+}
+
+/* Conteúdo do Modal */
+.modal-content {
+    background-color: #ffffff; /* Fundo branco */
+    margin: 5% auto; /* Margem no topo e centraliza horizontalmente */
+    padding: 20px; /* Espaçamento interno */
+    border-radius: 8px; /* Bordas arredondadas */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Sombra suave */
+    width: 80%; /* Largura do modal */
+    max-width: 500px; /* Largura máxima */
+    transition: background-color 0.3s ease; /* Transição suave */
+}
+
+/* Título do Modal */
+.modal-header {
+    display: flex; /* Flex para alinhar o conteúdo */
+    justify-content: space-between; /* Espaço entre itens */
+    align-items: center; /* Centraliza verticalmente */
+    margin-bottom: 15px; /* Espaçamento abaixo do cabeçalho */
+    font-size: 1.5em; /* Tamanho do texto do cabeçalho */
+    color: #ff6f61; /* Cor do texto do cabeçalho */
+}
+
+/* Botão de fechar */
+.close {
+    color: #aaa; /* Cor do botão de fechar */
+    font-size: 22px; /* Tamanho do botão */
+    cursor: pointer; /* Cursor pointer */
+    transition: color 0.3s; /* Transição suave */
+}
+
+.close:hover,
+.close:focus {
+    color: #ff4500; /* Cor ao passar o mouse */
+}
+
+/* Estilo para arrastar arquivos */
+.drop-zone {
+    border: 2px dashed #ff6f61; /* Borda azul */
+    border-radius: 8px; /* Bordas arredondadas */
+    padding: 30px; /* Aumentando o espaço interno */
+    margin: 20px 0; /* Espaçamento em cima e embaixo */
+    background-color: #f9f9f9; /* Fundo leve */
+    text-align: center; /* Centraliza o texto */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transição suave */
+    height: 120px; /* Altura fixa para a área de arrastar */
+    display: flex; /* Usar flex para centralizar */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    font-size: 1.1em; /* Tamanho do texto */
+    color: #333; /* Cor do texto */
+    cursor: pointer;
+}
+
+/* Efeito ao passar o mouse sobre a drop-zone */
+.drop-zone:hover {
+    background-color: #ffe4e1; /* Fundo claro ao passar o mouse */
+    transform: scale(1.01); /* Leve aumento ao passar o mouse */
+}
+
+/* Efeito ao soltar um arquivo na drop-zone */
+.drop-zone.drag-over {
+    background-color: #ffebcd; /* Fundo mais claro ao arrastar um arquivo */
+    border-color: #ff4500; /* Muda a cor da borda */
+}
+
+/* Rodapé do Modal */
+.modal-footer {
+    display: flex; /* Flex para alinhar o conteúdo */
+    justify-content: flex-end; /* Alinha os botões à direita */
+    margin-top: 15px; /* Espaçamento acima do rodapé */
+}
+
+/* Botões no rodapé do Modal */
+.modal-footer button {
+    padding: 10px 18px; /* Tamanho do botão */
+    background-color: #ff6f61; /* Cor do botão */
+    color: white; /* Cor do texto */
+    border: none; /* Sem borda */
+    border-radius: 25px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor pointer */
+    font-weight: bold; /* Negrito */
+    font-size: 1em; /* Tamanho da fonte */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transição suave */
+    margin-left: 10px; /* Espaçamento entre botões */
+}
+
+.modal-footer button:hover {
+    background-color: #ff4500; /* Cor ao passar o mouse */
+    transform: scale(1.05); /* Efeito de leve aumento */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra ao passar o mouse */
+}
+
+
+/* Modo escuro para o link de download */
+.download-link {
+    color: #ff6f61; /* Cor do texto no modo escuro */
+    text-decoration: underline; /* Sublinhado */
+}
+
+.download-link:hover {
+    color: #ff4500; /* Cor ao passar o mouse no modo escuro */
+}
+
+/* Modo escuro */
+body.dark-mode .modal-content {
+    background-color: #2a2a38; /* Fundo do modal no modo escuro */
+    color: #e0e0e0; /* Cor do texto no modo escuro */
+    border: 1px solid #666; /* Borda sutil no modo escuro */
+}
+
+/* Modo escuro para o botão de fechar */
+body.dark-mode .close {
+    color: #ccc; /* Cor do botão de fechar no modo escuro */
+}
+
+/* Modo escuro para drop-zone */
+body.dark-mode .drop-zone {
+    border-color: #ff6961; /* Cor da borda no modo escuro */
+    background-color: #3c3c5c; /* Fundo da drop-zone no modo escuro */
+    color: #f9f9f9; /* Cor do texto na drop-zone no modo escuro */
+}
+
+/* Modo escuro para o cabeçalho do modal */
+body.dark-mode .modal-header {
+    color: #ff6f61; /* Cor do texto do cabeçalho no modo escuro */
+}
+
+/* Modo escuro para o link de download */
+body.dark-mode .download-link {
+    color: #ff6f61; /* Cor do texto no modo escuro */
+    text-decoration: underline; /* Sublinhado */
+}
+
+body.dark-mode .download-link:hover {
+    color: #ff4500; /* Cor ao passar o mouse no modo escuro */
+}
+
+
+/* Foco no botão e contorno */
+.close:focus,
+.modal-footer button:focus {
+    outline: 2px solid #ff4500; /* Contorno ao focar */
+}

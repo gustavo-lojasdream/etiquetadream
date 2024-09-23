@@ -1,31 +1,95 @@
-<html lang="pt-BR"></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./src/logo-aba.png" type="image/png">
     <title>Gerador de Etiquetas</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/modal.css">
+    <link rel="stylesheet" href="./styles/mensagem.css">
 </head>
+
 <body>
     <header>
-        <h1>Dream Store - Gerador de Etiquetas</h1>
+        <div class="header-content">
+            <img src="./src/Logo.svg" alt="Logo da Dream Store" id="logo">
+            <h1>Gerador de Etiquetas</h1>
+            <button id="darkModeToggle" aria-label="Alternar tema">🌙</button>
+        </div>
     </header>
+
     <main>
+        <div class="controls">
+            <div class="buttons">
+                <div class="select-container">
+                    <button id="abrirModal">Importar Arquivo</button>
+                </div>
+            </div>
+        </div>
+        
         <table id="produtosTable">
             <thead>
                 <tr>
-                    <th>EAN</th>
-                    <th>Nome do Produto</th>
-                    <th>Preço</th>
-                    <th>Quantidade</th>
-                    <th>Ações</th>
+                    <th id="ean">EAN</th>
+                    <th id="nome">Nome do Produto</th>
+                    <th id="preco">Preço</th>
+                    <th id="quant">Quantidade</th>
+                    <th id="acao">Ações</th>
                 </tr>
             </thead>
             <tbody>
                 <!-- Linhas de produtos serão adicionadas aqui -->
             </tbody>
         </table>
-        <button id="adicionarProduto">+</button>
-        <button id="gerarEtiquetas">Gerar Etiquetas</button>
+
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Carregar lista de EAN e Quantidade</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="drop-zone" id="dropZone">
+                        Arraste e solte um arquivo CSV/TXT aqui ou clique para selecionar
+                        <input type="file" id="uploadCSV" style="display: none;" accept=".csv">
+                    </div>
+                    <p>
+                        <a href="exemplo.csv" download class="download-link">
+                            Baixar modelo
+                        </a>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button id="fecharModal">Fechar</button>
+                </div>
+            </div>
+        </div>
+        
+        
+
+        <div class="controls">
+            <div class="buttons">
+                <button id="adicionarProduto">+ Adicionar Produto</button>
+            </div>
+            <div class="buttons">
+                <div class="select-container">
+                    <button id="limparTabela">Limpar Tabela</button>
+                    <select id="tipoArquivo">
+                        <option value="txt">TXT</option>
+                        <option value="zpl">ZPL</option>
+                    </select>
+                    <button id="gerarEtiquetas">Gerar Etiquetas</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="logContainer">
+            <ul id="logList"></ul>
+        </div>
     </main>
+
     <script src="script.js"></script>
 </body>
+
+</html>
