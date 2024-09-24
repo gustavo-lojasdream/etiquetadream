@@ -1,32 +1,284 @@
-/* Estilização básica da página */
-body {
-    font-family: sans-serif;
+/* Normaliza o comportamento padrão de elementos */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+* {
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+/* Estilização geral */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Estilo do header */
 header {
     text-align: center;
     margin-bottom: 20px;
+    font-size: 2em;
+    color: #ff6f61;
+    text-shadow: 1px 1px 5px rgba(120, 86, 231, 0.3);
 }
 
+header h1 {
+    color: #093158;
+}
+
+/* Estilo padrão do logo */
+#logo {
+    width: 240px;
+    margin-bottom: 10px;
+    transition: transform 0.3s ease;
+}
+
+/* Tabela */
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
 }
 
-th, td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: left;
+table:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
-button #id {
+th {
+    padding: 12px;
+    background-color: #ffebcd;
+    color: #d2691e;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+}
+
+th:hover {
+    background-color: #ffe4b5;
+}
+
+td {
+    background-color: #fff;
+    text-align: center;
+    vertical-align: middle;
+    padding: 12px;
+}
+
+/* Ajustes de largura das colunas */
+#ean {
+    width: 15%;
+}
+
+#nome {
+    width: 30%;
+}
+
+#preco,
+#quant,
+#acao {
+    width: 10%;
+}
+
+/* Estilo do botão */
+button,
+.button {
     padding: 10px 20px;
-    background-color: #4CAF50;
+    background-color: #ff6f61;
     color: white;
     border: none;
+    border-radius: 25px;
     cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 5px;
 }
 
-/* Estilização adicional para seus elementos */
+button:hover {
+    background-color: #ff4500;
+    transform: scale(1.05);
+}
+
+/* Botão de Dark Mode */
+#darkModeToggle {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 105, 180, 0.2);
+    animation: pulse 2s infinite;
+    transition: transform 0.4s ease, background-color 0.4s ease;
+}
+
+#darkModeToggle:hover {
+    transform: scale(1.1);
+    background-color: rgba(255, 105, 180, 0.4);
+}
+
+/* Animação de pulso */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Modo escuro */
+body.dark-mode {
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+}
+
+body.dark-mode header h1 {
+    color: #ffffff; /* Cor branca para o texto do h1 no modo escuro */
+}
+
+body.dark-mode table {
+    background-color: #2a2a38;
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode th {
+    background-color: #3a3a4c;
+    color: #ffcccb;
+}
+
+body.dark-mode td {
+    background-color: #2a2a38;
+    color: #e0e0e0;
+}
+
+body.dark-mode #logo {
+    filter: brightness(0) invert(1); /* Inverte as cores do logo */
+}
+
+body.dark-mode button {
+    background-color: #ff6961;
+    color: #fff;
+}
+
+body.dark-mode button:hover {
+    background-color: #ff4500;
+}
+
+
+.select-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Alinha à direita */
+    margin: 10px 0; /* Espaçamento em cima e embaixo */
+}
+
+/* Estilo do botão Limpar Tabela */
+#limparTabela {
+    margin-right: auto; /* Move o botão para a esquerda */
+}
+
+/* Estilização para inputs */
+input[type="text"],
+input[type="number"] {
+    padding: 10px;
+    border: 2px solid #ff6f61; 
+    border-radius: 10px; 
+    font-size: 1em; 
+    width: calc(100% - 22px); /* Ajuste para acomodar a borda */
+    margin: 5px 0; 
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+/* Estilização específica para o select */
+select {
+    padding: 10px;
+    border: 2px solid #ff6f61; 
+    border-radius: 10px; 
+    font-size: 1em; 
+    width: 80px; /* Defina uma largura fixa ou ajuste conforme necessário */
+    margin: 5px 0; 
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.ean-input,
+.nome-input,
+.preco-input,
+.quantidade-input {
+    width: calc(70px - 20px);
+    margin: 0 5px;
+}
+
+.quantidade-input {
+    text-align: center;
+}
+
+/* Quando em foco */
+.ean-input:focus,
+.nome-input:focus,
+.preco-input:focus,
+.quantidade-input:focus,
+select:focus {
+    border-color: #ff4500;
+    outline: none;
+    background-color: #ffe4e1;
+}
+
+/* Modo escuro para inputs e selects */
+body.dark-mode input[type="text"],
+body.dark-mode input[type="number"],
+body.dark-mode select {
+    background-color: #3c3c5c;
+    border: 2px solid #ff6961;
+    color: #e0e0e0;
+}
+
+/* Modo escuro para inputs em foco */
+body.dark-mode .ean-input:focus,
+body.dark-mode .nome-input:focus,
+body.dark-mode .preco-input:focus,
+body.dark-mode .quantidade-input:focus,
+body.dark-mode select:focus {
+    border-color: #ff4500;
+    background-color: #4c4c6a;
+}
+
+/* Estilo do botão de adicionar produto */
+#adicionarProduto {
+    width: 100%; /* Largura igual à da tabela */
+    padding: 10px 0; /* Tamanho do botão */
+    background-color: transparent; /* Fundo vazio */
+    border: 2px dashed #ff6f61; /* Borda tracejada */
+    color: #ff6f61; /* Cor do texto */
+    border-radius: 25px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de pointer */
+    font-size: 1em; /* Tamanho da fonte */
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease; /* Transição suave */
+}
+
+#adicionarProduto:hover {
+    background-color: #ffebcd; /* Fundo ao passar o mouse */
+    color: #ff4500; /* Cor do texto ao passar o mouse */
+    transform: scale(1.02); /* Aumenta ligeiramente o botão ao passar o mouse */
+}
+
+
+/* Modo escuro para o botão de adicionar produto */
+body.dark-mode #adicionarProduto:hover {
+    background-color: #4c4c6a; /* Fundo no modo escuro ao passar o mouse */
+    color: #ff6961; /* Cor do texto no modo escuro ao passar o mouse */
+}
+
+.nome-input, .preco-input {
+    background-color: #f9f9f9; /* Cor de fundo para indicar que é apenas leitura */
+    cursor: not-allowed; /* Altera o cursor para indicar que não é editável */
+}
+
+
