@@ -1,4 +1,6 @@
 /* Normaliza o comportamento padrão de elementos */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -7,7 +9,7 @@
 
 /* Estilização geral */
 body {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-family: 'Roboto', sans-serif;
     background-color: #f0f8ff;
     color: #333;
     padding: 20px;
@@ -22,7 +24,11 @@ header {
     margin-bottom: 20px;
     font-size: 2em;
     color: #ff6f61;
-    text-shadow: 1px 1px 5px rgba(255, 105, 180, 0.3);
+    text-shadow: 1px 1px 5px rgba(120, 86, 231, 0.3);
+}
+
+header h1 {
+    color: #093158;
 }
 
 /* Estilo padrão do logo */
@@ -134,6 +140,10 @@ body.dark-mode {
     color: #e0e0e0;
 }
 
+body.dark-mode header h1 {
+    color: #ffffff; /* Cor branca para o texto do h1 no modo escuro */
+}
+
 body.dark-mode table {
     background-color: #2a2a38;
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
@@ -161,6 +171,7 @@ body.dark-mode button {
 body.dark-mode button:hover {
     background-color: #ff4500;
 }
+
 
 .select-container {
     display: flex;
