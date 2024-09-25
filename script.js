@@ -30,79 +30,44 @@ async function carregarProdutos() {
     }
 }
 
-async function buscarProdutoPorEAN(ean, quantidade, linha) {
-    // Se uma linha da tabela estiver presente, estamos lidando com o cenário de nome e preço
-    if (linha) {
-        const nomeInput = linha.querySelector('.nome-input');
-        const precoInput = linha.querySelector('.preco-input');
-        const quantidadeInput = linha.querySelector('.quantidade-input');  // Campo de quantidade na mesma linha
-        const eanInput = linha.querySelector('.ean-input');  // Captura o input do EAN para manter o foco
+// Função para buscar produto por EAN
+async function buscarProdutoPorEAN(ean, linha) {
+    const nomeInput = linha.querySelector('.nome-input');
+    const precoInput = linha.querySelector('.preco-input');
+    const eanInput = linha.querySelector('.ean-input');
 
-        // Se o campo EAN estiver vazio
-        if (!ean) {
-            nomeInput.value = '';
-            precoInput.value = 'R$ 0,00';
-            quantidadeInput.value = '1';  // Define a quantidade como 1 por padrão
-            return false;
-        }
+    // Se o campo EAN estiver vazio
+    if (!ean) {
+        nomeInput.value = '';
+        precoInput.value = 'R$ 0,00';
+        return false;
+    }
 
-        // Verifica se o produto existe nos objetos produtosModal ou produtosAdicionados
-        const produto = produtosModal[ean.trim()] || produtosAdicionados[ean.trim()];
-
-        if (produto) {
-            // Produto encontrado, preenche os campos da mesma linha
-            nomeInput.value = produto.descricao;
-            precoInput.value = produto.preco;
-            quantidadeInput.value = quantidade || '1';  // Preenche a quantidade, define como 1 se estiver vazio
-
-            mostrarMensagem("Produto encontrado.", "success");
-
-            // Foca no campo EAN atual e seleciona todo o texto
-            setTimeout(() => {
-                if (eanInput) {
-                    eanInput.focus();  // Garante que o campo tenha o foco
-                    eanInput.setSelectionRange(0, eanInput.value.length);  // Seleciona todo o valor no input
-                }
-            }, 100); // Pequeno atraso para garantir que outros eventos não interfiram
-
-            // Limpa a próxima linha (opcional)
-            const proximaLinha = linha.nextElementSibling; // Seleciona a próxima linha
-            if (proximaLinha) {
-                proximaLinha.querySelector('.nome-input').value = '';
-                proximaLinha.querySelector('.preco-input').value = 'R$ 0,00';
-                proximaLinha.querySelector('.quantidade-input').value = '1';  // Define a quantidade como 1 por padrão
-            }
-
-            return true;
-        } else {
-            // Produto não encontrado, exibe a mensagem e mantém o foco no campo EAN
-            mostrarMensagem("Produto não encontrado.", "error");
-
-            // Foca e seleciona todo o conteúdo do campo EAN
-            setTimeout(() => {
-                if (eanInput) {
-                    eanInput.focus();  // Garante que o campo tenha o foco
-                    eanInput.setSelectionRange(0, eanInput.value.length);  // Seleciona todo o valor no input
-                }
-            }, 100); // Pequeno atraso para garantir que outros eventos não interfiram
-
-            return false;
-        }
-
+    // Verifica se o produto existe
+    const produto = produtosModal[ean.trim()] || produtosAdicionados[ean.trim()];
+    
+    if (produto) {
+        // Produto encontrado, preenche os campos
+        nomeInput.value = produto.descricao;
+        precoInput.value = produto.preco;
+        mostrarMensagem("Produto encontrado.", "success");
+        return true;
     } else {
-        // Caso onde apenas o EAN e quantidade são fornecidos (sem linha específica)
-        const produto = produtosModal[ean.trim()];
-        if (produto) {
-            // Cria uma nova linha com os dados do produto encontrado
-            const novaLinha = criarLinhaProduto(ean, produto.descricao, produto.preco, quantidade);
-            mostrarMensagem("Produto adicionado.", "success");
-            return true;
-        } else {
-            mostrarMensagem("Produto não encontrado.", "error");
-            return false;
-        }
+        // Produto não encontrado, exibe a mensagem e seleciona o campo EAN
+        mostrarMensagem("Produto não encontrado.", "error");
+
+        // Foca e seleciona todo o conteúdo do campo EAN
+        setTimeout(() => {
+            if (eanInput) {
+                eanInput.focus();  // Garante que o campo tenha o foco
+                eanInput.setSelectionRange(0, eanInput.value.length);  // Seleciona todo o valor no input
+            }
+        }, 100); // Pequeno atraso para garantir que outros eventos não interfiram
+
+        return false;
     }
 }
+
 // Adiciona evento de "Enter" no campo EAN
 document.querySelectorAll('.ean-input').forEach(input => {
     input.addEventListener('keypress', async function(event) {
