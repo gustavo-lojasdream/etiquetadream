@@ -129,7 +129,6 @@ function adicionarProduto() {
                 }
             } else {
                 // Mantém o foco no campo EAN, limpa o valor e seleciona todo o texto
-                this.value = ''; // Limpa o campo
                 this.focus();
                 this.select(); // Seleciona o texto (neste caso, nada, pois foi limpo)
             }
