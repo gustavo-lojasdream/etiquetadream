@@ -155,3 +155,19 @@ body.dark-mode .download-link:hover {
 .modal-footer button:focus {
     outline: 2px solid #ff4500; /* Contorno ao focar */
 }
+
+
+#modalImportarXML {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    z-index: 1000;
+}
+
+#modalImportarXML h2 {
+    margin: 0 0 10px 0;
+}

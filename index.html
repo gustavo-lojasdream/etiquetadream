@@ -24,11 +24,13 @@
         <div class="controls">
             <div class="buttons">
                 <div class="select-container">
-                    <button id="abrirModal">Importar Arquivo</button>
+                    <button id="abrirModal">Importar TXT / CSV</button>
+                    <!-- <button id="importarXMLButton">Importar XML</button> -->
                 </div>
             </div>
         </div>
-        
+        <!-- <input type="file" id="importarXMLButton" accept=".XML" /> -->
+
         <table id="produtosTable">
             <thead>
                 <tr>
@@ -55,7 +57,7 @@
                         <input type="file" id="uploadCSV" style="display: none;" accept=".csv">
                     </div>
                     <p>
-                        <a href="exemplo.csv" download class="download-link">
+                        <a href="./data/exemplo2.csv" download class="download-link">
                             Baixar modelo
                         </a>
                     </p>
@@ -65,8 +67,6 @@
                 </div>
             </div>
         </div>
-        
-        
 
         <div class="controls">
             <div class="buttons">
@@ -89,7 +89,8 @@
         </div>
     </main>
 
-    <script src="./script.js"></script>
+    <script src="./script/script.js"></script>
+    <script src="./script/darkMode.js"></script>
 </body>
 
 </html>

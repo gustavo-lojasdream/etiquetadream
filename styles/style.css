@@ -32,11 +32,12 @@ header h1 {
 }
 
 /* Estilo padrão do logo */
+/*
 #logo {
     width: 240px;
     margin-bottom: 10px;
     transition: transform 0.3s ease;
-}
+}*/
 
 /* Tabela */
 table {
@@ -158,10 +159,10 @@ body.dark-mode td {
     background-color: #2a2a38;
     color: #e0e0e0;
 }
-
+/*
 body.dark-mode #logo {
-    filter: brightness(0) invert(1); /* Inverte as cores do logo */
-}
+    filter: brightness(0) invert(1); /* Inverte as cores do logo
+}*/
 
 body.dark-mode button {
     background-color: #ff6961;
@@ -282,3 +283,9 @@ body.dark-mode #adicionarProduto:hover {
 }
 
 
+/* // CSS para indicar que está buscando */
+.ean-input.buscando {
+    background-image: url('loader.gif'); /* Imagem de um ícone de carregamento */
+    background-repeat: no-repeat;
+    background-position: right center;
+}
