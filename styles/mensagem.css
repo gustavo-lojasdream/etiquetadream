@@ -1,0 +1,71 @@
+/* Estilos para campos de entrada */
+.input-success {
+    border: 2px solid green; /* Borda verde para sucesso */
+}
+
+.input-error {
+    border: 2px solid red; /* Borda vermelha para erro */
+}
+
+/* Estilos para mensagens */
+.mensagem {
+    color: white; /* Texto branco */
+    padding: 10px; /* Espaçamento interno */
+    border-radius: 5px; /* Bordas arredondadas */
+    opacity: 0; /* Invisível por padrão */
+    z-index: 1000; /* Garantir que fique acima de outros elementos */
+    transition: opacity 0.5s ease; /* Transição suave para opacidade */
+    margin-bottom: 10px; /* Espaçamento entre as mensagens */
+}
+
+/* Cores para tipos de mensagem */
+.mensagem.success {
+    background-color: #4CAF50; /* Verde para sucesso */
+}
+
+.mensagem.error {
+    background-color: #f44336; /* Vermelho para erro */
+}
+
+.mensagem.alert {
+    background-color: #ff9800; /* Laranja para alerta */
+}
+
+.mensagem.info {
+    background-color: #2196F3; /* Azul para informação */
+}
+
+.mensagem.warning {
+    background-color: #ffc107; /* Amarelo para aviso */
+    color: #856404; /* Texto marrom escuro */
+    border: 1px solid #ffeeba; /* Borda amarela clara */
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s forwards; /* Animação de entrada */
+}
+
+.fade-out {
+    animation: fadeOut 0.5s forwards; /* Animação de saída */
+}
+
+/* Contêiner para organizar as mensagens */
+.mensagem-container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column; /* Organiza as mensagens verticalmente */
+}

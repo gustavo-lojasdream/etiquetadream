@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./src/logo-aba.png" type="image/png">
+    <title>Gerador de Etiquetas</title>
+    <link rel="stylesheet" href="./styles/style.css">
+    <link rel="stylesheet" href="./styles/modal.css">
+    <link rel="stylesheet" href="./styles/mensagem.css">
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+
+            <h1 id="h1">Gerador de Etiquetas</h1>
+            <button id="darkModeToggle" aria-label="Alternar tema">🌙</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="controls">
+            <div class="buttons">
+                <div class="select-container">
+                    <button id="abrirModal">Importar TXT / CSV</button>
+                    <!-- <button id="importarXMLButton">Importar XML</button> -->
+                </div>
+            </div>
+        </div>
+        <!-- <input type="file" id="importarXMLButton" accept=".XML" /> -->
+
+        <table id="produtosTable">
+            <thead>
+                <tr>
+                    <th id="ean">EAN</th>
+                    <th id="nome">Nome do Produto</th>
+                    <th id="preco">Preço</th>
+                    <th id="quant">Quantidade</th>
+                    <th id="acao">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Linhas de produtos serão adicionadas aqui -->
+            </tbody>
+        </table>
+
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Carregar lista de EAN e Quantidade</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="drop-zone" id="dropZone">
+                        Arraste e solte um arquivo CSV/TXT aqui ou clique para selecionar
+                        <input type="file" id="uploadCSV" style="display: none;" accept=".csv">
+                    </div>
+                    <p>
+                        <a href="./data/exemplo2.csv" download class="download-link">
+                            Baixar modelo
+                        </a>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button id="fecharModal">Fechar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="buttons">
+                <button id="adicionarProduto">+ Adicionar Produto</button>
+            </div>
+            <div class="buttons">
+                <div class="select-container">
+                    <button id="limparTabela">Limpar Tabela</button>
+                    <!-- <select id="tipoArquivo">
+                        <option value="txt">TXT</option>
+                        <option value="zpl">ZPL</option>
+                    </select> -->
+                    <select id="tipoEtiqueta" >
+                        <option value="qrcode" selected>QR Code</option>
+                        <option value="ean">EAN 13</option>
+                    </select>
+                    <button id="gerarEtiquetas">Gerar arquivo</button>
+                    <!-- <button onclick="gerarEtiquetas(true)">Imprimir Direto</button> -->
+                    <button id="imprimirDireto">Imprimir</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="logContainer">
+            <ul id="logList"></ul>
+        </div>
+    </main>
+    <script src="./script/config.js"></script>
+    <script src="./script/script.js"></script>
+    <script src="./script/darkMode.js"></script>
+</body>
+
+</html>
