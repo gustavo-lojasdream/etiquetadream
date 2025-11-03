@@ -29,47 +29,56 @@ async function carregarProdutos() {
         if (!response.ok) throw new Error('Erro ao acessar a planilha.');
 
         const data = await response.text();
-        const rows = data.split('\n').slice(1);
-        produtosTable.innerHTML = '';
+        const rows = data.split('\n').slice(1); // ignora cabeçalho
+        produtosModal = {}; // limpa o cache anterior
 
         rows.forEach(row => {
             const [ean, descricao, preco, codigoProduto] = row.split(',');
-            if (validarEAN13(ean.trim())) {
-                produtosModal[ean.trim()] = {
+            if (!ean) return;
+
+            const eanLimpo = ean.trim();
+            if (validarEAN13(eanLimpo)) {
+                produtosModal[eanLimpo] = {
                     descricao: normalizarTexto(descricao),
                     preco: formatarPrecoBr(preco),
                     codigoProduto
                 };
             } else {
-                mostrarMensagem(`EAN inválido: ${ean.trim()}`, "error");
+                mostrarMensagem(`EAN inválido: ${eanLimpo}`, "error");
             }
         });
 
         if (Object.keys(produtosModal).length > 0) {
-            mostrarMensagem("Carregado", "success");
-            adicionarProduto();
+            mostrarMensagem("Produtos carregados com sucesso!", "success");
+        } else {
+            mostrarMensagem("Nenhum produto válido encontrado na planilha.", "alert");
         }
+
     } catch (error) {
         mostrarMensagem(`Erro: ${error.message}`, "error");
     }
+
+    // ✅ Mantém o log de status da validação EAN13
     console.log(
         ENV.VALIDAR_EAN13
             ? "🔒 Validação EAN13 ATIVADA"
             : "⚙️ Validação EAN13 DESATIVADA — aceitando qualquer código"
     );
-
 }
 
-
-
 async function buscarProdutoPorEAN(ean, linha) {
+    if (!linha) return false; // 🚨 Evita erro caso a linha não exista
+
     if (ENV.VALIDAR_EAN13) {
         while (ean.length < 13) {
             ean = '0' + ean;
         }
     }
 
-    linha.querySelector('.ean-input').value = ean;
+    const eanInput = linha.querySelector('.ean-input');
+    if (!eanInput) return false;
+
+    eanInput.value = ean;
 
     if (produtosModal[ean]) {
         linha.querySelector('.nome-input').value = produtosModal[ean].descricao;
@@ -82,18 +91,17 @@ async function buscarProdutoPorEAN(ean, linha) {
     }
 }
 
+
+// 🔹 Enter no campo EAN
 document.addEventListener('keypress', async function (event) {
     if (event.target.classList.contains('ean-input') && event.key === 'Enter') {
-        let ean = event.target.value.trim();
+        const linha = event.target.closest('tr'); // garante que é uma linha válida
+        if (!linha) return;
 
-        if (ENV.VALIDAR_EAN13) {
-            while (ean.length < 13) {
-                ean = '0' + ean;
-            }
-        }
+        let ean = event.target.value.trim();
+        if (ENV.VALIDAR_EAN13) while (ean.length < 13) ean = '0' + ean;
 
         event.target.value = ean;
-        const linha = event.target.closest('.linha-produto');
         const encontrado = await buscarProdutoPorEAN(ean, linha);
 
         if (!encontrado) {
@@ -101,25 +109,25 @@ document.addEventListener('keypress', async function (event) {
             event.target.select();
         } else {
             const nextEANInput = linha.nextElementSibling?.querySelector('.ean-input');
-            if (nextEANInput) {
-                nextEANInput.focus();
-            } else {
-                adicionarProduto();
-            }
+            if (nextEANInput) nextEANInput.focus();
+            else adicionarProduto();
         }
-        event.preventDefault(); // Previne o comportamento padrão do Enter
+        event.preventDefault();
     }
 });
 
-// 🔍 Busca automática ao sair do campo EAN
+// 🔹 Blur no campo EAN
 document.addEventListener('blur', async function (event) {
     if (event.target.classList.contains('ean-input')) {
+        const linha = event.target.closest('tr');
+        if (!linha) return;
         const ean = event.target.value.trim();
         if (!ean) return;
-        const linha = event.target.closest('.linha-produto');
         await buscarProdutoPorEAN(ean, linha);
     }
 }, true);
+
+
 
 
 function formatarPrecoBr(preco) {
@@ -472,7 +480,6 @@ function mostrarMensagem(mensagem, tipo = "info") {
     if (ENV.DEBUG) console.log(`[${tipo}] ${mensagem}`);
 }
 
-
 function configurarModal() {
     const modal = document.getElementById("myModal");
     const abrirModalButton = document.getElementById("abrirModal");
@@ -481,7 +488,7 @@ function configurarModal() {
     const dropZone = document.getElementById("dropZone");
 
     // Define os tipos de arquivo aceitos
-    uploadCSV.setAttribute("accept", ".csv, .txt");
+    uploadCSV.setAttribute("accept", ".csv, .txt, .xml");
 
     // Abre o modal
     abrirModalButton.onclick = () => modal.style.display = "block";
@@ -531,7 +538,6 @@ function configurarModal() {
         uploadCSV.value = ""; // Reinicia o input de arquivo
     });
 }
-
 function processFiles(files) {
     const file = files[0];
     if (!file) {
@@ -539,34 +545,113 @@ function processFiles(files) {
         return;
     }
 
-    // Verifica se o arquivo é um CSV ou TXT
-    const fileType = file.type;
-    if (!["text/csv", "text/plain"].includes(fileType) && !file.name.endsWith('.csv') && !file.name.endsWith('.txt')) {
-        alert("Por favor, carregue um arquivo CSV ou TXT.");
-        return;
-    }
+    const fileName = file.name.toLowerCase();
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-        const content = event.target.result;
-        processFileContent(content); // Processa o conteúdo do arquivo
-    };
-    reader.readAsText(file);
+    if (fileName.endsWith('.xml')) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const xmlContent = event.target.result;
+            processXMLFile(xmlContent); // 🔹 processa o XML
+        };
+        reader.readAsText(file);
+    } else if (fileName.endsWith('.csv') || fileName.endsWith('.txt')) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const content = event.target.result;
+            processFileContent(content); // 🔹 processa CSV/TXT
+        };
+        reader.readAsText(file);
+    } else {
+        alert("Por favor, carregue um arquivo XML, CSV ou TXT.");
+    }
+}
+
+// ================================
+// 🧾 PROCESSAR XML (somente EAN e quantidade)
+// ================================
+async function processXMLFile(xmlContent) {
+    try {
+        limparTabela("importacao");
+        logList.innerHTML = '';
+
+        // 🔹 Garante que o banco de produtos está carregado
+        if (!Object.keys(produtosModal).length) {
+            await carregarProdutos();
+        }
+
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(xmlContent, "application/xml");
+
+        const produtos = xml.getElementsByTagName("det");
+        if (!produtos || produtos.length === 0) {
+            mostrarMensagem("Nenhum produto encontrado no XML.", "error");
+            return;
+        }
+
+        let totalAdicionados = 0;
+
+        for (let item of produtos) {
+            const prod = item.getElementsByTagName("prod")[0];
+            if (!prod) continue;
+
+            let ean = prod.getElementsByTagName("cEAN")[0]?.textContent.trim() || "";
+            let eanTrib = prod.getElementsByTagName("cEANTrib")[0]?.textContent.trim() || "";
+            let qCom = prod.getElementsByTagName("qCom")[0]?.textContent.trim() || "1";
+            let qTrib = prod.getElementsByTagName("qTrib")[0]?.textContent.trim() || qCom;
+
+            // 🔹 Remove .00 e converte para número inteiro
+            let quantidade = parseInt(parseFloat(qCom.replace(',', '.')));
+
+            // 🔹 Usa cEAN, senão tenta cEANTrib
+            if (!ean || ean === "SEM GTIN" || ean === "0") ean = eanTrib;
+            if (!ean || ean === "SEM GTIN" || ean === "0") continue;
+
+            // 🔹 Busca produto carregado no banco
+            const produto = produtosModal[ean];
+            if (!produto) {
+                console.warn(`Produto com EAN ${ean} não encontrado no banco carregado.`);
+                continue;
+            }
+
+            // 🔹 Adiciona à tabela usando dados carregados
+            criarLinhaProduto(ean, produto.descricao, produto.preco, quantidade);
+            totalAdicionados++;
+        }
+
+        if (totalAdicionados > 0) {
+            mostrarMensagem(`${totalAdicionados} produtos importados do XML com sucesso!`, "success");
+        } else {
+            mostrarMensagem("Nenhum produto válido encontrado no XML ou banco de produtos.", "alert");
+        }
+
+    } catch (error) {
+        console.error("Erro ao processar XML:", error);
+        mostrarMensagem("Erro ao processar XML.", "error");
+    }
 }
 
 
 async function processFileContent(content) {
     console.log("Conteúdo do arquivo:", content);
-    limparTabela();
-    produtos = {}; // Reinicializa o objeto de produtos
+    limparTabela("importacao");
     logList.innerHTML = '';
 
     content = content.trim();
     const delimiter = content.includes(";") ? ";" : ",";
-    const rows = content.split(/\r?\n/).filter(row => row.trim() !== '');
+    const rows = content
+        .split(/\r?\n/)
+        .map(r => r.trim())
+        .filter(r => r && !/^(\s*;+\s*|,*)$/.test(r));
 
-    // Obtém os cabeçalhos da primeira linha
-    const headers = rows[0].split(delimiter).map(item => item.trim().toLowerCase());
+    if (rows.length === 0) {
+        mostrarMensagem("Arquivo vazio ou inválido.", "error");
+        return;
+    }
+
+    const headers = rows[0].split(delimiter)
+        .map(h => h.trim().toLowerCase())
+        .filter(h => h !== "");
+
     const indices = {
         ean: headers.indexOf('ean'),
         nome: headers.indexOf('nome'),
@@ -574,54 +659,40 @@ async function processFileContent(content) {
         quantidade: headers.indexOf('quantidade')
     };
 
-    // Verifica se o cabeçalho tem pelo menos 'ean' e 'quantidade'
     if (indices.ean === -1 || indices.quantidade === -1) {
         mostrarMensagem("Arquivo com formato inválido. Necessário pelo menos 'ean' e 'quantidade'.", "error");
         return;
     }
 
-    // Carrega os produtos para busca posterior
-    await carregarProdutos();
+    // 🔹 Detecta se há colunas nome e preco completas
+    const temNomePreco = indices.nome !== -1 && indices.preco !== -1;
 
-    // Processa cada linha do arquivo
+    // 🔹 Só carrega banco de produtos se faltar nome/preço
+    if (!temNomePreco) {
+        await carregarProdutos();
+    }
+
     for (let row of rows.slice(1)) {
-        const columns = row.split(delimiter).map(item => item.trim());
-        let ean = columns[indices.ean];
+        const columns = row.split(delimiter).map(c => c.trim()).filter(c => c !== "");
+        if (columns.length < 2) continue;
 
-        if (ENV.VALIDAR_EAN13) {
-            while (ean.length < 13) {
-                ean = '0' + ean;
-            }
-        }
+        let ean = columns[indices.ean] || "";
+        if (ENV.VALIDAR_EAN13) while (ean.length < 13) ean = "0" + ean;
 
-        const quantidadeStr = columns[indices.quantidade];
-        const quantidade = parseInt(quantidadeStr, 10);
+        const quantidade = parseInt(columns[indices.quantidade] || "1", 10);
+        if (!ean || isNaN(quantidade) || quantidade <= 0) continue;
 
-        // Validação do EAN
-        if (!validarEAN13(ean)) {
-            mostrarMensagem("EAN inválido: " + ean, "error");
-            continue; // Continua para a próxima linha
-        }
-
-        if (!columns[indices.nome] && !columns[indices.preco]) {
-            // Se só temos EAN e quantidade
-            const produtoAdicionado = await adicionarProdutoPorEAN(ean, quantidade);
-            if (!produtoAdicionado) {
-                mostrarMensagem("Produto com EAN " + ean + " não encontrado no banco de dados.", "error");
-            }
-        } else if (columns[indices.nome] && columns[indices.preco]) {
-            let nome = normalizarTexto(columns[indices.nome]);
-            let precoStr = columns[indices.preco];
-            let preco = formatarPrecoBr(precoStr);
-
-            if (produtos[ean]) {
-                mostrarMensagem("Produto já adicionado: " + ean, "warning");
-                continue; // Evita adicionar o mesmo produto novamente
-            }
-            produtos[ean] = { descricao: nome, preco, quantidade };
+        // Se tem nome e preço direto no arquivo
+        if (temNomePreco) {
+            const nome = normalizarTexto(columns[indices.nome] || "");
+            const preco = formatarPrecoBr(columns[indices.preco] || "0");
             criarLinhaProduto(ean, nome, preco, quantidade);
         } else {
-            mostrarMensagem("Informações incompletas para o EAN: " + ean, "error");
+            // Só EAN + quantidade → busca info na planilha
+            const produtoAdicionado = await adicionarProdutoPorEAN(ean, quantidade);
+            if (!produtoAdicionado) {
+                mostrarMensagem("Produto com EAN " + ean + " não encontrado.", "error");
+            }
         }
     }
 
@@ -635,27 +706,32 @@ function adicionarAoLog(mensagem) {
     logList.appendChild(li);
 }
 
+// ================================
+// 🧹 LIMPAR TABELA (corrigido)
+// ================================
+function limparTabela(modo = "manual") {
+    const tbody = document.getElementById('produtosTable').getElementsByTagName('tbody')[0];
+    while (tbody.rows.length > 0) tbody.deleteRow(0);
 
-function limparTabela() {
-    const produtosTable = document.getElementById('produtosTable').getElementsByTagName('tbody')[0];
-    while (produtosTable.rows.length > 0) {
-        produtosTable.deleteRow(0);
+    produtosAdicionados = {};
+
+    if (modo === "manual") {
+        // 🔹 Quando o usuário clica em "Limpar Tabela"
+        carregarProdutos().then(() => {
+            adicionarProduto(); // cria linha vazia já pronta para digitar
+            mostrarMensagem("Tabela limpa. Pronta para digitar novos produtos.", "info");
+        });
+    } else if (modo === "importacao") {
+        // 🔹 Quando a limpeza vem de importação
+        mostrarMensagem("Tabela limpa para importar produtos.", "info");
     }
 }
+
+
 
 document.getElementById('limparTabela').addEventListener('click', () => {
-    limparTabela();
-    carregarProdutos(); // Recarregue os produtos após limpar a tabela
+    limparTabela("manual");
 });
-
-function limparTabela() {
-    const produtosTable = document.getElementById('produtosTable').getElementsByTagName('tbody')[0];
-    while (produtosTable.rows.length > 0) {
-        produtosTable.deleteRow(0);
-    }
-    produtos = {}; // Reinicialize o objeto de produtos aqui
-    produtosModal = {}; // Também reinicialize o objeto de produtosModal
-}
 
 function validarEAN13(ean) {
     // Se a validação estiver desativada, sempre retorna true
@@ -741,3 +817,8 @@ if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').match
 } else {
     console.log('O navegador está no modo claro');
 }
+
+window.addEventListener("DOMContentLoaded", async () => {
+    await carregarProdutos();  // Carrega banco de produtos
+    adicionarProduto();        // Cria 1 linha vazia para digitar EAN
+});
